@@ -170,6 +170,8 @@ function setHeaders(req, res) {
     res.set('access-control-allow-origin', '*');
     res.set('cross-origin-resource-policy', 'cross-origin');
     res.set('cross-origin-embedder-policy', 'unsafe-none');
+    // make sure this tool's URL does not get leaked
+    res.set('referrer-policy', 'no-referrer');
 
     const headers = req.query.headers ?? req.query.h;
     if (typeof headers === 'object') {
